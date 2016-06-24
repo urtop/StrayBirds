@@ -1,0 +1,40 @@
+
+---
+layout: post
+title: Mock and PoweMOCK UnitTest example
+category: JAVA
+comments: true
+---
+
+## 改良以后的TAS连接CLASS
+
+```java
+import java.util.function.Supplier;
+
+public class TASServiceFactoryImpl implements TASServiceFactory {
+
+	private static final int Rerty_times = 3;
+	private final TASConfig tasConfig;
+
+	public TASServiceFactoryImpl(String tasConfigEnum) {
+		this.tasConfig = new TASConfig(tasConfigEnum);
+	}
+
+	public TASServiceFactoryImpl(TASConfig tasConfig) {
+		this.tasConfig = tasConfig;
+	}
+
+	@Override
+	public StreamingTradeUpdateService createStreamingTradeUpdateServiceProxy() {
+		Supplier<StreamingTradeUpdateService> supplier = () -> ServiceFactory.createSSLStreamingTradeUpdateServiceProxy(tasConfig.runtimeEnvironment);
+		return RetryUtil.retryUntil(supplier, Rerty_times);
+	}
+
+
+	@Override
+	public StreamingTradeQueryService createStreamingTradeQueryServiceProxy() {
+
+		return RetryUtil.retryUntil(() -> ServiceFactory.createSSLStreamingTradeQueryServiceProxy(tasConfig.runtimeEnvironment), Rerty_times);
+	}
+}
+```
