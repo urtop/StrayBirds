@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Maven项目里spring读取不到XML配置文件问题
-category: Notes
+category: Maven
 comments: true
 ---
 
